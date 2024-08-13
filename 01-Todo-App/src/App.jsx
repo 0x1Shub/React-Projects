@@ -1,35 +1,51 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { useState } from "react";
+import TodoList from "./components/TodoList";
+import TodoForm from "./components/TodoForm";
+import "./App.css";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [todos, setTodos] = useState([]);
+  const [todoToEdit, setTodoToEdit] = useState(null);
+
+  const addTodo = (todo) => {
+    setTodos([...todos, todo]);
+  };
+
+  const editTodo = (updatedTodo) => {
+    const updatedTodos = todos.map((todo) =>
+      todo === todoToEdit ? { ...todoToEdit, ...updatedTodo } : todo
+    );
+    setTodos(updatedTodos);
+    setTodoToEdit(null);
+  };
+
+  const handleEdit = (index) => {
+    setTodoToEdit(todos[index]);
+  };
+
+  const handleDelete = (index) => {
+    const updatedTodos = todos.filter((_, i) => i !== index);
+    setTodos(updatedTodos);
+  };
+
+  const handleToggle = (index) => {
+    const updatedTodos = todos.slice();
+    updatedTodos[index].done = !updatedTodos[index].done;
+    setTodos(updatedTodos);
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div>
+      <h1>Todo List</h1>
+      <TodoForm addTodo={addTodo} editTodo={editTodo} todoToEdit={todoToEdit} />
+      <TodoList
+        todos={todos}
+        handleEdit={handleEdit}
+        handleDelete={handleDelete}
+        handleToggle={handleToggle}
+      />
+    </div>
+  );
 }
 
-export default App
+export default App;
