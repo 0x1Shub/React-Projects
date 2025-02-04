@@ -1,14 +1,15 @@
-// src/App.jsx
-import React from "react";
+import "./App.css";
 import Counter from "./components/Counter";
-import "./styles/Counter.css";
 
-const App = () => {
+function App() {
   return (
-    <div className="App">
-      <Counter />
+    <div className="flex items-center justify-center min-h-screen">
+      <div className="text-center">
+        <h1 className="text-4xl font-bold">Counter App</h1>
+        <Counter />
+      </div>
     </div>
   );
-};
+}
 
 export default App;
