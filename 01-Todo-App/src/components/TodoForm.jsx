@@ -1,49 +1,32 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
-const TodoForm = ({ addTodo, editTodo, todoToEdit }) => {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-
-  useEffect(() => {
-    if (todoToEdit) {
-      setTitle(todoToEdit.title);
-      setDescription(todoToEdit.description);
-    } else {
-      setTitle("");
-      setDescription("");
-    }
-  }, [todoToEdit]);
+const TodoForm = ({ addTodo }) => {
+  const [task, setTask] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (todoToEdit) {
-      editTodo({ title, description });
-    } else {
-      addTodo({ title, description, done: false });
-    }
-    setTitle("");
-    setDescription("");
+    const trimmedTask = task.trim();
+    if (!trimmedTask) return;
+
+    addTodo(trimmedTask);
+    setTask("");
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className="flex mb-4">
       <input
         type="text"
-        placeholder="Title"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
+        placeholder="Add a new task..."
+        value={task}
+        onChange={(e) => setTask(e.target.value)}
+        className="flex-grow p-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-400"
       />
-      <br />
-      <br />
-      <input
-        type="text"
-        placeholder="Description"
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
-      />
-      <br />
-      <br />
-      <button type="submit">{todoToEdit ? "Update Todo" : "Add Todo"}</button>
+      <button
+        type="submit"
+        className="bg-blue-500 text-white px-4 rounded-r-md hover:bg-blue-600 transition-colors"
+      >
+        Add
+      </button>
     </form>
   );
 };

@@ -1,49 +1,58 @@
-import React, { useState } from "react";
-import TodoList from "./components/TodoList";
+import { useState } from "react";
+import Header from "./components/Header";
 import TodoForm from "./components/TodoForm";
-import "./App.css";
+import FilterSort from "./components/FilterSort";
+import TodoList from "./components/TodoList";
 
 function App() {
   const [todos, setTodos] = useState([]);
-  const [todoToEdit, setTodoToEdit] = useState(null);
+  const [filter, setFilter] = useState("All");
+  const [sort, setSort] = useState("Added date");
 
-  const addTodo = (todo) => {
-    setTodos([...todos, todo]);
+  const addTodo = (task) => {
+    const newTodo = {
+      id: Date.now(),
+      task,
+      date: new Date(),
+      completed: false,
+    };
+    setTodos([...todos, newTodo]);
   };
 
-  const editTodo = (updatedTodo) => {
+  const toggleComplete = (id) => {
     const updatedTodos = todos.map((todo) =>
-      todo === todoToEdit ? { ...todoToEdit, ...updatedTodo } : todo
+      todo.id === id ? { ...todo, completed: !todo.completed } : todo
     );
     setTodos(updatedTodos);
-    setTodoToEdit(null);
   };
 
-  const handleEdit = (index) => {
-    setTodoToEdit(todos[index]);
-  };
-
-  const handleDelete = (index) => {
-    const updatedTodos = todos.filter((_, i) => i !== index);
+  const deleteTodo = (id) => {
+    const updatedTodos = todos.filter((todo) => todo.id !== id);
     setTodos(updatedTodos);
   };
 
-  const handleToggle = (index) => {
-    const updatedTodos = todos.slice();
-    updatedTodos[index].done = !updatedTodos[index].done;
+  const editTodo = (id, newTask) => {
+    const updatedTodos = todos.map((todo) =>
+      todo.id === id ? { ...todo, task: newTask } : todo
+    );
     setTodos(updatedTodos);
   };
 
   return (
-    <div>
-      <h1>Todo List</h1>
-      <TodoForm addTodo={addTodo} editTodo={editTodo} todoToEdit={todoToEdit} />
-      <TodoList
-        todos={todos}
-        handleEdit={handleEdit}
-        handleDelete={handleDelete}
-        handleToggle={handleToggle}
-      />
+    <div className="min-h-screen bg-gray-100">
+      <Header />
+      <div className="container mx-auto p-4">
+        <TodoForm addTodo={addTodo} />
+        <FilterSort setFilter={setFilter} setSort={setSort} />
+        <TodoList
+          todos={todos}
+          filter={filter}
+          sort={sort}
+          toggleComplete={toggleComplete}
+          deleteTodo={deleteTodo}
+          editTodo={editTodo}
+        />
+      </div>
     </div>
   );
 }
